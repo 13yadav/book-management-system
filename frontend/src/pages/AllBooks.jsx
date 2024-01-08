@@ -5,7 +5,6 @@ import { NoBooksFound } from "../components/NoBooksFound";
 
 export function AllBooks() {
   const [books, setBooks] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -23,28 +22,8 @@ export function AllBooks() {
   }, [currentPage]);
 
   useEffect(() => {
-    let timerId;
-
-    const handleSearch = async () => {
-      try {
-        const { data } = await ApiService.get(
-          `/books/search?title=${searchQuery}`
-        );
-        setBooks(data.books);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (searchQuery) {
-      clearTimeout(timerId);
-      timerId = setTimeout(handleSearch, 500);
-    } else {
-      getAllBooks();
-    }
-
-    return () => clearTimeout(timerId);
-  }, [searchQuery, getAllBooks]);
+    getAllBooks();
+  }, [getAllBooks]);
 
   const loadMore = () => {
     if (currentPage < totalPages) {
@@ -54,14 +33,6 @@ export function AllBooks() {
 
   return (
     <>
-      <div className="flex justify-center px-4 my-2">
-        <input
-          className="flex h-10 w-full md:w-1/3 rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
-          placeholder="Search books with title"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        ></input>
-      </div>
       {books.length > 0 ? (
         <div className="mx-auto grid w-full max-w-7xl items-center space-y-4 px-2 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-4">
           {books.map((book) => (

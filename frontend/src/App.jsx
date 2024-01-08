@@ -14,6 +14,7 @@ import { Navbar } from "./components/Navbar";
 import { Error404 } from "./pages/errors/Error404";
 import { AllBooks } from "./pages/AllBooks";
 import { getToken } from "./services/JwtService";
+import { SearchBooks } from "./pages/SearchBooks";
 
 function App() {
   history.navigate = useNavigate();
@@ -32,6 +33,10 @@ function App() {
         <Route
           path="/books"
           element={isAuthenticated ? <AllBooks /> : <Navigate to="/signin" />}
+        />
+        <Route
+          path="/books/search"
+          element={isAuthenticated ? <SearchBooks /> : <Navigate to="/signin" />}
         />
         <Route
           path="/books/publish"

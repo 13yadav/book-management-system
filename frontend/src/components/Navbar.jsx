@@ -13,6 +13,10 @@ const menuItems = [
     name: "All Books",
     href: "/books",
   },
+  {
+    name: "Search Books",
+    href: "/books/search",
+  }
 ];
 
 export function Navbar() {
