@@ -61,9 +61,21 @@ router.get("/user", async (req, res) => {
 });
 
 router.get("/published", async (req, res) => {
-  const publishedBooks = await Book.find({ published: true }).populate("createdBy", "name");
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 4;
+  const totalBooks = await Book.countDocuments({ published: true });
+  const totalPages = Math.ceil(totalBooks / pageSize);
+  const skip = (page - 1) * pageSize;
+
+  const publishedBooks = await Book.find({ published: true })
+    .populate("createdBy", "name")
+    .skip(skip)
+    .limit(pageSize);
+
   res.status(200).json({
     books: publishedBooks,
+    totalPages: totalPages,
+    currentPage: page,
   });
 });
 

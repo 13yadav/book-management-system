@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import bookImg from "../assets/book-cover.jpg";
 import ApiService from "../services/ApiService";
 
 export function AllBooks() {
   const [books, setBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const getAllBooks = async () => {
+  const getAllBooks = useCallback(async () => {
     try {
-      const { data } = await ApiService.get("/books/published");
-      setBooks(data.books);
+      const { data } = await ApiService.get(`/books/published?page=${currentPage}`);
+      setBooks((prevBooks) => [...prevBooks, ...data.books]);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [currentPage]);
 
   useEffect(() => {
     let timerId;
@@ -35,7 +39,13 @@ export function AllBooks() {
     }
 
     return () => clearTimeout(timerId);
-  }, [searchQuery]);
+  }, [searchQuery, getAllBooks]);
+
+  const loadMore = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  }
 
   return (
     <>
@@ -70,6 +80,15 @@ export function AllBooks() {
       ) : (
         <div className="text-center py-10 text-xl">No books found</div>
       )}
+      {currentPage < totalPages && <div className="text-center mb-8">
+        <button
+          type="button"
+          onClick={loadMore}
+          className="rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+        >
+          Load More
+        </button>
+      </div>}
     </>
   );
 }
