@@ -35,18 +35,18 @@ function App() {
           element={isAuthenticated ? <AllBooks /> : <Navigate to="/signin" />}
         />
         <Route
-          path="/books/search"
+          path="/search"
           element={isAuthenticated ? <SearchBooks /> : <Navigate to="/signin" />}
         />
         <Route
-          path="/books/publish"
+          path="/publish"
           element={
             isAuthenticated ? <PublishBook /> : <Navigate to="/signin" />
           }
         />
 
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={isAuthenticated ? <Navigate to="/" /> : <SignUp />} />
+        <Route path="/signin" element={isAuthenticated ? <Navigate to="/" /> : <SignIn />} />
 
         <Route path="*" element={<Error404 />} />
       </Routes>

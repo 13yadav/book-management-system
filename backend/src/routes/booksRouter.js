@@ -30,11 +30,13 @@ router.post("/publish", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   const searchQuery = req.query.title;
-  const books = await Book.find({ title: { $regex: new RegExp(searchQuery, 'i') } });
+  const books = await Book.find({
+    title: { $regex: new RegExp(searchQuery, "i") },
+  }).sort({ createdAt: -1 });
 
   res.status(200).json({
     books: books,
-    searchQuery
+    searchQuery,
   });
 });
 
@@ -54,7 +56,9 @@ router.put("/unpublish/:bookId", async (req, res) => {
 
 router.get("/user", async (req, res) => {
   const createdBy = req.user._id;
-  const userBooks = await Book.find({ createdBy }).populate("createdBy", "name");
+  const userBooks = await Book.find({ createdBy })
+    .populate("createdBy", "name")
+    .sort({ createdAt: -1 });
   res.status(200).json({
     books: userBooks,
   });
@@ -70,7 +74,8 @@ router.get("/published", async (req, res) => {
   const publishedBooks = await Book.find({ published: true })
     .populate("createdBy", "name")
     .skip(skip)
-    .limit(pageSize);
+    .limit(pageSize)
+    .sort({ createdAt: -1 });
 
   res.status(200).json({
     books: publishedBooks,

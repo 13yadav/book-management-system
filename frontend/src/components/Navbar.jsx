@@ -15,7 +15,7 @@ const menuItems = [
   },
   {
     name: "Search Books",
-    href: "/books/search",
+    href: "/search",
   }
 ];
 
@@ -33,7 +33,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="inline-flex items-center space-x-2">
           <span>
-            <img src="/logo.svg" className="h-12 w-auto" alt="" />
+            <Link to={"/"}><img src="/logo.svg" className="h-12 w-auto" alt="" /></Link>
           </span>
           <span className="font-bold" title="Book Management System">
             B.M.S.
@@ -57,7 +57,7 @@ export function Navbar() {
         <div className="hidden lg:block">
           {isAuthenticated ? (
             <Link
-              to={"/books/publish"}
+              to={"/publish"}
               className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
             >
               Publish Book
@@ -116,7 +116,7 @@ export function Navbar() {
                 </div>
                 {isAuthenticated ? (
                   <Link
-                    to={"/books/publish"}
+                    to={"/publish"}
                     className="rounded-md bg-black px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                   >
                     Publish Book
