@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import ApiService from "../services/ApiService";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-hot-toast';
 
 export function PublishBook() {
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ export function PublishBook() {
       const { data } = await ApiService.post("/books/publish", formData);
       alert(data.message);
       navigate('/')
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      toast.error(response?.data?.message)
     }
   };
 

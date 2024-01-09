@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import ApiService from "../services/ApiService";
 import { Book } from "../components/Book";
 import { NoBooksFound } from "../components/NoBooksFound";
+import { toast } from 'react-hot-toast';
 
 export function AllBooks() {
   const [books, setBooks] = useState([]);
@@ -16,8 +17,8 @@ export function AllBooks() {
       setBooks((prevBooks) => [...prevBooks, ...data.books]);
       setCurrentPage(data.currentPage);
       setTotalPages(data.totalPages);
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      toast.error(response?.data?.message)
     }
   }, [currentPage]);
 

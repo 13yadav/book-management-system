@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ApiService from "../services/ApiService";
 import { Book } from "../components/Book";
 import { NoBooksFound } from "../components/NoBooksFound";
+import { toast } from 'react-hot-toast';
 
 export function Home() {
   const [books, setBooks] = useState([]);
@@ -10,8 +11,8 @@ export function Home() {
     try {
       const { data } = await ApiService.get("/books/user");
       setBooks(data.books);
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      toast.error(response?.data?.message)
     }
   };
 
@@ -24,8 +25,8 @@ export function Home() {
       const { data } = await ApiService.put(`/books/unpublish/${bookId}`);
       alert(data.message);
       getUserBooks();
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      toast.error(response?.data?.message)
     }
   };
 

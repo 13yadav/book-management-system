@@ -6,6 +6,22 @@ import { setToken } from "../services/JwtService";
 import { setUserData } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
 
+function isEmpty(value) {
+  if (value === null || value === undefined) {
+    return true;
+  }
+
+  if (typeof value === "string" || Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  if (typeof value === "object") {
+    return Object.keys(value).length === 0;
+  }
+
+  return false;
+}
+
 export function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -13,6 +29,7 @@ export function SignUp() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState([]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -21,13 +38,28 @@ export function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setErrors([]);
     try {
       const { data } = await ApiService.post("/auth/signup", formData);
       setToken(data.accessToken);
       setUserData(JSON.stringify(data.user));
       navigate("/");
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      if (response?.data?.message) {
+        setErrors([response.data.message]);
+        return;
+      }
+
+      const fieldErrors = response?.data?.fieldErrors || [];
+      const errArr = []
+      for (let key in fieldErrors) {
+        errArr.push(fieldErrors[key][0])
+      }
+      setErrors(errArr);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -48,6 +80,27 @@ export function SignUp() {
               Sign In
             </Link>
           </p>
+          {!isEmpty(errors) && (
+            <div
+              className="bg-red-50 border border-red-200 text-sm text-red-400 rounded-lg p-4 mt-5"
+              role="alert"
+            >
+              <div className="flex">
+                <div className="ms-2">
+                  <h3 className="text-sm font-semibold">
+                    A problem has been occurred while submitting your data.
+                  </h3>
+                  <div className="mt-2 text-sm text-red-400">
+                    <ul className="list-disc space-y-1 ps-5">
+                      {errors.map((error) => (
+                        <li key={error}>{error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <form onSubmit={handleSubmit} method="POST" className="mt-8">
             <div className="space-y-5">
               <div>

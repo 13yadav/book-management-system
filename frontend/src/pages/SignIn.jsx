@@ -5,6 +5,7 @@ import ApiService from "../services/ApiService";
 import { setToken } from "../services/JwtService";
 import { setUserData } from "../services/UserService";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-hot-toast';
 
 export function SignIn() {
   const navigate = useNavigate();
@@ -25,8 +26,8 @@ export function SignIn() {
       setToken(data.accessToken);
       setUserData(JSON.stringify(data.user));
       navigate('/')
-    } catch (error) {
-      console.log(error);
+    } catch ({ response }) {
+      toast.error(response?.data?.message)
     }
   };
 

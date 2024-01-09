@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ApiService from "../services/ApiService";
 import { Book } from "../components/Book";
 import { NoBooksFound } from "../components/NoBooksFound";
+import { toast } from 'react-hot-toast';
 
 export function SearchBooks() {
   const [books, setBooks] = useState([]);
@@ -20,8 +21,8 @@ export function SearchBooks() {
         if (data.books.length === 0) {
           setBooksNotFound(true);
         }
-      } catch (error) {
-        console.log(error);
+      } catch ({ response }) {
+        toast.error(response?.data?.message)
       }
     };
 
