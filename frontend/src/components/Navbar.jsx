@@ -1,7 +1,7 @@
 import React from "react";
 import { Menu, X } from "lucide-react";
 import { Link, NavLink } from "react-router-dom";
-import { getToken } from "../services/JwtService";
+import { getToken, destroyToken } from "../services/JwtService";
 import { history } from "../helpers/history";
 
 const menuItems = [
@@ -16,7 +16,7 @@ const menuItems = [
   {
     name: "Search Books",
     href: "/search",
-  }
+  },
 ];
 
 export function Navbar() {
@@ -28,12 +28,19 @@ export function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const logout = () => {
+    destroyToken();
+    history.navigate("/signin");
+  };
+
   return (
     <div className="relative w-full bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="inline-flex items-center space-x-2">
           <span>
-            <Link to={"/"}><img src="/logo.svg" className="h-12 w-auto" alt="" /></Link>
+            <Link to={"/"}>
+              <img src="/logo.svg" className="h-12 w-auto" alt="" />
+            </Link>
           </span>
           <span className="font-bold" title="Book Management System">
             B.M.S.
@@ -72,6 +79,15 @@ export function Navbar() {
               {history.location.pathname === "/signin" ? "SignUp" : "SignIn"}
             </Link>
           )}
+          {isAuthenticated && (
+            <button
+              type="button"
+              onClick={logout}
+              className="ml-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            >
+              Logout
+            </button>
+          )}
         </div>
         <div className="lg:hidden">
           <Menu onClick={toggleMenu} className="h-6 w-6 cursor-pointer" />
@@ -99,7 +115,7 @@ export function Navbar() {
                   </div>
                 </div>
                 <div className="mt-6">
-                  <nav className="grid gap-y-4">
+                  <nav className="grid gap-y-4 mb-3">
                     {isAuthenticated &&
                       menuItems.map((item) => (
                         <NavLink
@@ -134,6 +150,15 @@ export function Navbar() {
                       ? "SignUp"
                       : "SignIn"}
                   </Link>
+                )}
+                {isAuthenticated && (
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="ml-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                  >
+                    Logout
+                  </button>
                 )}
               </div>
             </div>
