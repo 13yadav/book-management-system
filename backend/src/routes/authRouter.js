@@ -3,6 +3,7 @@ import { SignInSchema, SignUpSchema } from "../validators/index.js";
 import { User } from "../db/index.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ const generateToken = async (user) => {
   }
 };
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", asyncHandler(async (req, res) => {
   const validator = SignUpSchema.safeParse(req.body);
   if (!validator.success) {
     return res.status(400).json(validator.error.flatten());
@@ -47,9 +48,9 @@ router.post("/signup", async (req, res) => {
     user: userObj,
     accessToken: token,
   });
-});
+}));
 
-router.post("/signin", async (req, res) => {
+router.post("/signin", asyncHandler(async (req, res) => {
   const validator = SignInSchema.safeParse(req.body);
   if (!validator.success) {
     return res.status(400).json(validator.error.flatten());
@@ -81,6 +82,6 @@ router.post("/signin", async (req, res) => {
     user: userObj,
     accessToken: token,
   });
-});
+}));
 
 export default router;

@@ -2,12 +2,13 @@ import { Router } from "express";
 import authMiddleware from "../middlewares/auth.js";
 import { BookSchema } from "../validators/index.js";
 import { Book } from "../db/index.js";
+import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
 router.use(authMiddleware);
 
-router.post("/publish", async (req, res) => {
+router.post("/publish", asyncHandler(async (req, res) => {
   const validator = BookSchema.safeParse(req.body);
 
   if (!validator.success) {
@@ -26,9 +27,9 @@ router.post("/publish", async (req, res) => {
     message: "Book published successfully",
     book: newBook,
   });
-});
+}));
 
-router.get("/search", async (req, res) => {
+router.get("/search", asyncHandler(async (req, res) => {
   const searchQuery = req.query.title;
   const books = await Book.find({
     title: { $regex: new RegExp(searchQuery, "i") },
@@ -38,9 +39,9 @@ router.get("/search", async (req, res) => {
     books: books,
     searchQuery,
   });
-});
+}));
 
-router.put("/unpublish/:bookId", async (req, res) => {
+router.put("/unpublish/:bookId", asyncHandler(async (req, res) => {
   const bookId = req.params.bookId;
   const updatedBook = await Book.findByIdAndUpdate(
     bookId,
@@ -52,9 +53,9 @@ router.put("/unpublish/:bookId", async (req, res) => {
     message: "Book unpublished successfully",
     book: updatedBook,
   });
-});
+}));
 
-router.get("/user", async (req, res) => {
+router.get("/user", asyncHandler(async (req, res) => {
   const createdBy = req.user._id;
   const userBooks = await Book.find({ createdBy })
     .populate("createdBy", "name")
@@ -62,9 +63,9 @@ router.get("/user", async (req, res) => {
   res.status(200).json({
     books: userBooks,
   });
-});
+}));
 
-router.get("/published", async (req, res) => {
+router.get("/published", asyncHandler(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const pageSize = parseInt(req.query.pageSize) || 4;
   const totalBooks = await Book.countDocuments({ published: true });
@@ -82,6 +83,6 @@ router.get("/published", async (req, res) => {
     totalPages: totalPages,
     currentPage: page,
   });
-});
+}));
 
 export default router;

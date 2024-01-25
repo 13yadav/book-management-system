@@ -1,24 +1,19 @@
-import "dotenv/config";
-import jwt from "jsonwebtoken";
+import 'dotenv/config'
+import jwt from 'jsonwebtoken'
+import asyncHandler from 'express-async-handler'
 
-async function userMiddleware(req, res, next) {
-  try {
-    const { authorization } = req.headers;
-    const authArr = authorization.split(" ");
-    const decoded = jwt.verify(authArr[1], process.env.JWT_SECRET);
+const userMiddleware = asyncHandler(async (req, res, next) => {
+  const { authorization } = req.headers
+  const authArr = authorization.split(' ')
+  const decoded = jwt.verify(authArr[1], process.env.JWT_SECRET)
 
-    if (decoded) {
-      req.user = decoded;
-      return next();
-    } else {
-      throw new Error();
-    }
-  } catch (error) {
-    return res.status(401).json({
-      message: "Unauthorized",
-      error: error,
-    });
+  if (decoded) {
+    req.user = decoded
+    return next()
+  } else {
+    res.status(401)
+    throw new Error('Unauthorized')
   }
-}
+})
 
-export default userMiddleware;
+export default userMiddleware
